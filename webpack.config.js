@@ -14,6 +14,11 @@ module.exports = {
             {
                 test: /\.mjs$/,
                 type: "javascript/auto",
+            },
+            {
+                test: /\.(js)$/,
+                exclude: /node_modules/,
+                use: [ "eslint-loader" ]
             }
         ]
     },
