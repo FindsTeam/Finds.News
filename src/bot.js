@@ -5,8 +5,6 @@ const messages = require("./constants/messages");
 
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
-bot.use(Telegraf.log());
-
 bot.start(({ reply }) => {
     return reply(
         messages.start,
