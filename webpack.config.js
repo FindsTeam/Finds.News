@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
@@ -22,9 +23,11 @@ module.exports = {
             }
         ]
     },
+    plugins: [
+        new webpack.IgnorePlugin(/^encoding$/, /node-fetch/)
+    ],
     optimization: {
         minimize: true,
         minimizer: [ new TerserPlugin() ]
     },
-    
 };
