@@ -1,7 +1,10 @@
 const Telegraf = require("telegraf");
+
 const buttons = require("./constants/buttons");
 const keyboards = require("./constants/keyboards");
 const messages = require("./constants/messages");
+
+const eventsToday = require("./controllers/events-today");
 
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
@@ -12,7 +15,7 @@ bot.start(({ reply }) => {
     );
 });
 
-bot.hears(buttons.eventsAround, ctx => ctx.reply(messages.sendLocation));
-bot.hears(buttons.eventsToday, ctx => ctx.reply(messages.eventsToday));
+bot.hears(buttons.eventsToday, context => eventsToday(context));
+bot.hears(buttons.eventsAround, context => context.reply(messages.sendLocation));
 
 bot.launch();

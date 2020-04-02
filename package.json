@@ -26,11 +26,13 @@
   "homepage": "https://github.com/FindsTeam/Finds.Events#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.9.7",
     "telegraf": "^3.36.0",
+    "terser-webpack-plugin": "^2.3.5",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
-    "webpack-node-externals": "^1.7.2",
-    "terser-webpack-plugin": "^2.3.5"
+    "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
