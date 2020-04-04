@@ -9,7 +9,7 @@ module.exports = {
     target: "node",
     output: {
         path: path.join(__dirname, "build"),
-        filename: "server.js"
+        filename: "bot.js"
     },
     module: {
         rules: [
