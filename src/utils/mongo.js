@@ -1,7 +1,7 @@
 const Event = require("../models/event");
 
 const { toMongoDate, now, endOfToday } = require("./time");
-const { isEventSingle } = require("./events");
+const { isEventSingle, sortByDate } = require("./events");
 
 const findEventByQuery = query => Event.find(query, (error, result) => result);
 
@@ -19,8 +19,9 @@ const getEventsInRangeByStartTime = async (from, to) => {
 module.exports.getActualEventsForToday = async () => {
     const currentTimestamp = toMongoDate(now());
     const endOfDayTimestamp = toMongoDate(endOfToday());
+    const events = await getEventsInRangeByStartTime(currentTimestamp, endOfDayTimestamp);
 
-    return await getEventsInRangeByStartTime(currentTimestamp, endOfDayTimestamp);
+    return events.sort((firstEvent, secondEvent) => sortByDate(firstEvent, secondEvent));
 };
 
 module.exports.getEventsInProgressForToday = async () => {
@@ -35,5 +36,6 @@ module.exports.getEventsInProgressForToday = async () => {
     };
     const events = await findEventByQuery(query);
 
-    return events.filter(event => isEventSingle(event));
+    return events.filter(event => isEventSingle(event))
+        .sort((firstEvent, secondEvent) => sortByDate(firstEvent, secondEvent));
 };
