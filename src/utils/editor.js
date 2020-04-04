@@ -1,19 +1,56 @@
-const { fromMongoDate } = require("./time");
+const messages = require("../constants/messages");
 
-const SEPARATOR = "\n`______________________________`\n\n";
+const { toFindsBriefDate, now, toFindsTime } = require("./time");
 
-const fullEventInformation = event => {
-    const date = fromMongoDate(event.start);
-    return `📆  ${ date }
+const SHORT_DESCRIPTION = 200;
+const LONG_DESCRIPTION = 400;
+const SEPARATOR = "`______________________________`\n";
+const EVENTS_SEPARATOR = `\n${ SEPARATOR }\n`;
 
-📌  [${ event.title }](${ event.links.post })
-    
-🗒  ${ event.description.slice(0, 400) }
-    
-🌍  ${ event.address } ([${ event.place }](${ event.links.place }))`;
+const buildBriefing = amount => {
+    return `\n📆  _${ toFindsBriefDate(now()) }_
+🎉  Ивентов найдено: *${ amount }*
+🤖  _Просим прощения, если ссылки будут битыми, описания неинформативными, а ивенты — отстойными._`;
 };
 
-const fullEventInformationDigest = events => events.map(event => fullEventInformation(event)).join(SEPARATOR);
+const buildAddress = event => {
+    const {
+        address,
+        place
+    } = event;
+
+    const placeString = place ? `[${ place }](${ event.links.place })` : "";
+    const placeSection = address && placeString ? `(${ placeString })` : placeString;
+    
+    return address ? `_${ address }_ ${ placeSection}` : placeSection;
+};
+
+const fullEventInformation = event => {
+    return `⏰  _${ toFindsTime(event.start) }_\n
+📌  [${ event.title }](${ event.links.post })\n
+🗒  ${ event.description.slice(0, LONG_DESCRIPTION) }...\n
+🌍  ${ buildAddress(event) }`;
+};
+
+const shortEventInformation = event => {
+    return `⏰  _${ toFindsTime(event.start) }_
+📌  [${ event.title }](${ event.links.post }) ${ event.description.slice(0, SHORT_DESCRIPTION) }...
+🌍  ${ buildAddress(event) }`;
+};
+
+const fullEventInformationDigest = events => {
+    return `${ messages.eventsToday }
+${ buildBriefing(events.length) }
+${ SEPARATOR }
+${ events.map(event => fullEventInformation(event)).join(EVENTS_SEPARATOR) }`;
+};
+
+const shortEventInformationDigest = events => {
+    return `${ messages.eventsToday }
+${ buildBriefing(events.length) }
+${ SEPARATOR }
+${ events.map(event => shortEventInformation(event)).join(EVENTS_SEPARATOR) }`;
+};
 
 module.exports.createEventsDigest = events => {
     const amount = events.length;
@@ -23,6 +60,6 @@ module.exports.createEventsDigest = events => {
     } else if (amount < 4) {
         return fullEventInformationDigest(events);
     } else {
-        return `🤖  Для тебя ничего не жалко, но я еще пока не умею обрабатывать ${ amount } ивентов за раз.`;
+        return shortEventInformationDigest(events);
     }
 };
