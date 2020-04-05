@@ -1,14 +1,15 @@
 const path = require("path");
 const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
+const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
+    mode: "production",
     entry: "./index.js",
     target: "node",
-    devtool: "sourcemap",
     output: {
         path: path.join(__dirname, "build"),
-        filename: "server.js"
+        filename: "bot.js"
     },
     module: {
         rules: [
@@ -30,4 +31,5 @@ module.exports = {
         minimize: true,
         minimizer: [ new TerserPlugin() ]
     },
+    externals: [ nodeExternals() ]
 };

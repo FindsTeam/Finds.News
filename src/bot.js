@@ -1,9 +1,13 @@
 const Telegraf = require("telegraf");
+
 const buttons = require("./constants/buttons");
 const keyboards = require("./constants/keyboards");
 const messages = require("./constants/messages");
 
-const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
+const eventsToday = require("./controllers/events-today");
+
+const token = process.env.TELEGRAM_TOKEN;
+const bot = new Telegraf(token, { polling: true });
 
 bot.start(({ reply }) => {
     return reply(
@@ -12,7 +16,16 @@ bot.start(({ reply }) => {
     );
 });
 
-bot.hears(buttons.eventsAround, ctx => ctx.reply(messages.sendLocation));
-bot.hears(buttons.eventsToday, ctx => ctx.reply(messages.eventsToday));
+bot.hears(buttons.eventsToday, context => eventsToday(context));
+bot.hears(buttons.eventsAround, context => context.reply(messages.sendLocation));
 
-bot.launch();
+if (process.env.NODE_ENV === "development") {
+    bot.launch();
+} else {
+    bot.launch({
+        webhook: {
+            domain: process.env.HEROKU_URL + token,
+            port: process.env.PORT
+        }
+    });
+}
