@@ -6,7 +6,7 @@ const messages = require("./constants/messages");
 
 const eventsToday = require("./controllers/events-today");
 
-const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
+const bot = new Telegraf(process.env.TELEGRAM_TOKEN, { polling: true });
 
 bot.start(({ reply }) => {
     return reply(
