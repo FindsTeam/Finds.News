@@ -2,7 +2,8 @@ const messages = require("../constants/messages");
 
 const { toFindsBriefDate, now, toFindsTime } = require("./time");
 
-const SHORT_DESCRIPTION = 200;
+const MAX_EVENTS_AMOUNT = 12;
+const SHORT_DESCRIPTION = 180;
 const LONG_DESCRIPTION = 400;
 const SEPARATOR = "`______________________________`\n";
 const EVENTS_SEPARATOR = `\n${ SEPARATOR }\n`;
@@ -60,6 +61,6 @@ module.exports.createEventsDigest = events => {
     } else if (amount < 4) {
         return fullEventInformationDigest(events);
     } else {
-        return shortEventInformationDigest(events);
+        return shortEventInformationDigest(events.splice(0, MAX_EVENTS_AMOUNT));
     }
 };
