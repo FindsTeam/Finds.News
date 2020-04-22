@@ -4,19 +4,24 @@ const buttons = require("./constants/buttons");
 const keyboards = require("./constants/keyboards");
 const messages = require("./constants/messages");
 
-const eventsToday = require("./controllers/events-today");
+const {
+    eventsForToday,
+    feelingLuckyForToday
+} = require("./controllers/events-today");
 
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new Telegraf(token, { polling: true });
 
-bot.start(({ reply }) => {
-    return reply(
-        messages.start,
-        keyboards.main
-    );
-});
+const start = context => context.reply(
+    messages.start,
+    keyboards.main
+);
 
-bot.hears(buttons.eventsToday, context => eventsToday(context));
+bot.start(context => start(context));
+bot.hears(buttons.back, context => start(context));
+bot.hears(buttons.eventsToday, context => eventsForToday(context));
+bot.hears(buttons.eventsTodayRetry, context => eventsForToday(context));
+bot.hears(buttons.feelingLucky, context => feelingLuckyForToday(context));
 bot.hears(buttons.eventsAround, context => context.reply(messages.sendLocation));
 
 if (process.env.NODE_ENV === "development") {
