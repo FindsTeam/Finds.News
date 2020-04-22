@@ -1,4 +1,5 @@
 const extra = require("telegraf/extra");
+const keyboards = require("../constants/keyboards");
 const markup = extra.markdown();
 
 const messages = require("../constants/messages");
@@ -11,9 +12,32 @@ const {
     createEventsDigest
 } = require("../utils/editor");
 
-module.exports = async context => {
-    const actualEvents = await getActualEventsForToday();
-    const message = actualEvents.length ? createEventsDigest(actualEvents) : messages.noEventsForToday;
+const buildReply = (context, events) => {
+    let message;
+    let keyboard;
 
-    context.reply(message, markup);
+    if (events.length) {
+        message = createEventsDigest(events);
+        keyboard = keyboards.haveEventsForToday;
+    } else {
+        message = messages.noEventsForToday;
+        keyboard = keyboards.noEventsForToday;
+    }
+
+    return context.reply(message, markup).then(() => {
+        context.reply(messages.afterEventsForToday, keyboard);
+    });
+};
+
+module.exports.eventsForToday = async context => {
+    const actualEvents = await getActualEventsForToday();
+
+    buildReply(context, actualEvents);
+};
+
+module.exports.feelingLuckyForToday = async context => {
+    const actualEvents = await getActualEventsForToday();
+    const randomEvent = [ actualEvents[Math.floor(Math.random() * actualEvents.length)] ];
+
+    buildReply(context, randomEvent);
 };
