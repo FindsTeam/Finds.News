@@ -1,6 +1,7 @@
-const extra = require("telegraf/extra");
+const Extra = require("telegraf/extra");
+const markup = Extra.markdown();
+
 const keyboards = require("../constants/keyboards");
-const markup = extra.markdown();
 
 const messages = require("../constants/messages");
 

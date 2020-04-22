@@ -5,4 +5,5 @@ module.exports = {
     eventsTodayRetry: "📅 Попробовать еще раз",
     back: "◀️  Вернуться",
     feelingLucky: "🍀  Мне сегодня повезет!",
+    locationRequest: markup => markup.locationRequestButton("🌍  Отправить текущее местоположение")
 };
