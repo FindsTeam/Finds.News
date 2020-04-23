@@ -25,7 +25,9 @@
   },
   "homepage": "https://github.com/FindsTeam/Finds.Events#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "dotenv": "^8.2.0",
+    "here-maps-node": "0.0.2",
     "moment": "^2.24.0",
     "mongoose": "^5.9.7",
     "telegraf": "^3.36.0",

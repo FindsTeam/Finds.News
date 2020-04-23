@@ -1,5 +1,3 @@
-const messages = require("../constants/messages");
-
 const { toFindsBriefDate, now, toFindsTime } = require("./time");
 
 const MAX_EVENTS_AMOUNT = 12;
@@ -28,39 +26,39 @@ const buildAddress = event => {
 
 const fullEventInformation = event => {
     return `⏰  _${ toFindsTime(event.start) }_\n
-📌  [${ event.title }](${ event.links.post })\n
-🗒  ${ event.description.slice(0, LONG_DESCRIPTION) }...\n
+📌  [${ event.title }](${ event.links && event.links.post })\n
+🗒  ${ event.description && event.description.slice(0, LONG_DESCRIPTION) }...\n
 🌍  ${ buildAddress(event) }`;
 };
 
 const shortEventInformation = event => {
     return `⏰  _${ toFindsTime(event.start) }_
-📌  [${ event.title }](${ event.links.post }) ${ event.description.slice(0, SHORT_DESCRIPTION) }...
+📌  [${ event.title }](${ event.links && event.links.post }) ${ event.description && event.description.slice(0, SHORT_DESCRIPTION) }...
 🌍  ${ buildAddress(event) }`;
 };
 
-const fullEventInformationDigest = events => {
-    return `${ messages.eventsToday }
+const fullEventInformationDigest = (header, events) => {
+    return `${ header }
 ${ buildBriefing(events.length) }
 ${ SEPARATOR }
 ${ events.map(event => fullEventInformation(event)).join(EVENTS_SEPARATOR) }`;
 };
 
-const shortEventInformationDigest = events => {
-    return `${ messages.eventsToday }
+const shortEventInformationDigest = (header, events) => {
+    return `${ header }
 ${ buildBriefing(events.length) }
 ${ SEPARATOR }
 ${ events.map(event => shortEventInformation(event)).join(EVENTS_SEPARATOR) }`;
 };
 
-module.exports.createEventsDigest = events => {
+module.exports.createEventsDigest = (header, events) => {
     const amount = events.length;
 
     if (amount === 1) {
-        return fullEventInformation(events[0]);
+        return fullEventInformation(header, events[0]);
     } else if (amount < 4) {
-        return fullEventInformationDigest(events);
+        return fullEventInformationDigest(header, events);
     } else {
-        return shortEventInformationDigest(events.splice(0, MAX_EVENTS_AMOUNT));
+        return shortEventInformationDigest(header, events.splice(0, MAX_EVENTS_AMOUNT));
     }
 };

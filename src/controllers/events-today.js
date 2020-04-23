@@ -1,7 +1,10 @@
-const extra = require("telegraf/extra");
-const keyboards = require("../constants/keyboards");
-const markup = extra.markdown();
+const Extra = require("telegraf/extra");
+const Composer = require("telegraf/composer");
+const WizardScene = require("telegraf/scenes/wizard");
+const markup = Extra.markdown();
 
+const keyboards = require("../constants/keyboards");
+const buttons = require("../constants/buttons");
 const messages = require("../constants/messages");
 
 const {
@@ -17,7 +20,7 @@ const buildReply = (context, events) => {
     let keyboard;
 
     if (events.length) {
-        message = createEventsDigest(events);
+        message = createEventsDigest(messages.eventsToday, events);
         keyboard = keyboards.haveEventsForToday;
     } else {
         message = messages.noEventsForToday;
@@ -25,19 +28,32 @@ const buildReply = (context, events) => {
     }
 
     return context.reply(message, markup).then(() => {
-        context.reply(messages.afterEventsForToday, keyboard);
+        context.reply(messages.afterSearch, keyboard);
     });
 };
 
-module.exports.eventsForToday = async context => {
+const eventsForToday = async context => {
     const actualEvents = await getActualEventsForToday();
 
     buildReply(context, actualEvents);
 };
 
-module.exports.feelingLuckyForToday = async context => {
+const feelingLuckyForToday = async context => {
     const actualEvents = await getActualEventsForToday();
     const randomEvent = [ actualEvents[Math.floor(Math.random() * actualEvents.length)] ];
 
     buildReply(context, randomEvent);
 };
+
+const afterSearchStepHandler = new Composer();
+afterSearchStepHandler.hears(buttons.eventsTodayRetry, context => eventsForToday(context));
+afterSearchStepHandler.hears(buttons.feelingLucky, context => feelingLuckyForToday(context));
+
+module.exports.eventsTodayWizard = new WizardScene("events-today-wizard",
+    (context) => {
+        eventsForToday(context);
+
+        return context.wizard.next();
+    },
+    afterSearchStepHandler
+);
