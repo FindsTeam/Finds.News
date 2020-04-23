@@ -15,7 +15,7 @@ const {
     createEventsDigest
 } = require("../utils/editor");
 
-const buildReply = (context, events) => {
+const buildReply = async (context, events) => {
     let message;
     let keyboard;
 
@@ -27,22 +27,21 @@ const buildReply = (context, events) => {
         keyboard = keyboards.noEventsForToday;
     }
 
-    return context.reply(message, markup).then(() => {
-        context.reply(messages.afterSearch, keyboard);
-    });
+    await context.reply(message, markup);
+    return await context.reply(messages.afterSearch, keyboard);
 };
 
 const eventsForToday = async context => {
     const actualEvents = await getActualEventsForToday();
 
-    buildReply(context, actualEvents);
+    return await buildReply(context, actualEvents);
 };
 
 const feelingLuckyForToday = async context => {
     const actualEvents = await getActualEventsForToday();
     const randomEvent = [ actualEvents[Math.floor(Math.random() * actualEvents.length)] ];
 
-    buildReply(context, randomEvent);
+    return await buildReply(context, randomEvent);
 };
 
 const afterSearchStepHandler = new Composer();

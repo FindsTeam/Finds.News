@@ -26,14 +26,14 @@ const buildAddress = event => {
 
 const fullEventInformation = event => {
     return `⏰  _${ toFindsTime(event.start) }_\n
-📌  [${ event.title }](${ event.links && event.links.post })\n
-🗒  ${ event.description && event.description.slice(0, LONG_DESCRIPTION) }...\n
+📌  [${ event.title }](${ event.links.post })\n
+🗒  ${ event.description.slice(0, LONG_DESCRIPTION) }...\n
 🌍  ${ buildAddress(event) }`;
 };
 
 const shortEventInformation = event => {
     return `⏰  _${ toFindsTime(event.start) }_
-📌  [${ event.title }](${ event.links && event.links.post }) ${ event.description && event.description.slice(0, SHORT_DESCRIPTION) }...
+📌  [${ event.title }](${ event.links.post }) ${ event.description.slice(0, SHORT_DESCRIPTION) }...
 🌍  ${ buildAddress(event) }`;
 };
 
@@ -55,7 +55,7 @@ module.exports.createEventsDigest = (header, events) => {
     const amount = events.length;
 
     if (amount === 1) {
-        return fullEventInformation(header, events[0]);
+        return fullEventInformation(events[0]);
     } else if (amount < 4) {
         return fullEventInformationDigest(header, events);
     } else {
