@@ -1,4 +1,5 @@
 const Markup = require("telegraf/markup");
+const Extra = require("telegraf/extra");
 const buttons = require("./buttons");
 
 const main = Markup.keyboard([
@@ -13,8 +14,21 @@ const noEventsForToday = Markup.keyboard([
     [ buttons.back, buttons.eventsTodayRetry ]
 ]).oneTime().resize().extra();
 
+const searchRadius = Markup.keyboard([
+    [ buttons.near, buttons.walk ]
+]).oneTime().resize().extra();
+
+const askForLocation = Extra.markup(markup => {
+    return markup.resize().oneTime().keyboard([
+        buttons.locationRequest(markup),
+        buttons.back
+    ]);
+});
+
 module.exports = {
     main,
     haveEventsForToday,
-    noEventsForToday
+    noEventsForToday,
+    askForLocation,
+    searchRadius
 };

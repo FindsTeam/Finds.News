@@ -1,6 +1,7 @@
-const extra = require("telegraf/extra");
+const Extra = require("telegraf/extra");
+const markup = Extra.markdown();
+
 const keyboards = require("../constants/keyboards");
-const markup = extra.markdown();
 
 const messages = require("../constants/messages");
 
@@ -17,7 +18,7 @@ const buildReply = (context, events) => {
     let keyboard;
 
     if (events.length) {
-        message = createEventsDigest(events);
+        message = createEventsDigest(messages.eventsToday, events);
         keyboard = keyboards.haveEventsForToday;
     } else {
         message = messages.noEventsForToday;
@@ -25,7 +26,7 @@ const buildReply = (context, events) => {
     }
 
     return context.reply(message, markup).then(() => {
-        context.reply(messages.afterEventsForToday, keyboard);
+        context.reply(messages.afterSearch, keyboard);
     });
 };
 
