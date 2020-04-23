@@ -18,7 +18,7 @@ const buildReply = (context, events) => {
     let keyboard;
 
     if (events.length) {
-        message = createEventsDigest(events);
+        message = createEventsDigest(messages.eventsToday, events);
         keyboard = keyboards.haveEventsForToday;
     } else {
         message = messages.noEventsForToday;
@@ -26,7 +26,7 @@ const buildReply = (context, events) => {
     }
 
     return context.reply(message, markup).then(() => {
-        context.reply(messages.afterEventsForToday, keyboard);
+        context.reply(messages.afterSearch, keyboard);
     });
 };
 

@@ -14,6 +14,10 @@ const noEventsForToday = Markup.keyboard([
     [ buttons.back, buttons.eventsTodayRetry ]
 ]).oneTime().resize().extra();
 
+const searchRadius = Markup.keyboard([
+    [ buttons.near, buttons.walk ]
+]).oneTime().resize().extra();
+
 const askForLocation = Extra.markup(markup => {
     return markup.resize().oneTime().keyboard([
         buttons.locationRequest(markup),
@@ -25,5 +29,6 @@ module.exports = {
     main,
     haveEventsForToday,
     noEventsForToday,
-    askForLocation
+    askForLocation,
+    searchRadius
 };
