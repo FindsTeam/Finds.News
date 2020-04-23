@@ -28,7 +28,7 @@ const buildReply = async (context, events) => {
     }
 
     await context.reply(message, markup);
-    return await context.reply(messages.afterSearch, keyboard);
+    return keyboard;
 };
 
 const eventsForToday = async context => {
@@ -37,20 +37,29 @@ const eventsForToday = async context => {
     return await buildReply(context, actualEvents);
 };
 
+const retryEventsForToday = async context => {
+    const keyboard = await eventsForToday(context);
+
+    return context.reply(messages.afterSearch, keyboard);
+};
+
 const feelingLuckyForToday = async context => {
     const actualEvents = await getActualEventsForToday();
     const randomEvent = [ actualEvents[Math.floor(Math.random() * actualEvents.length)] ];
+    const keyboard = await buildReply(context, randomEvent);
 
-    return await buildReply(context, randomEvent);
+    return context.reply(messages.afterSearch, keyboard);
 };
 
 const afterSearchStepHandler = new Composer();
-afterSearchStepHandler.hears(buttons.eventsTodayRetry, context => eventsForToday(context));
+afterSearchStepHandler.hears(buttons.eventsTodayRetry, context => retryEventsForToday(context));
 afterSearchStepHandler.hears(buttons.feelingLucky, context => feelingLuckyForToday(context));
 
 module.exports.eventsTodayWizard = new WizardScene("events-today-wizard",
-    (context) => {
-        eventsForToday(context);
+    async (context) => {
+        const keyboard = await eventsForToday(context);
+
+        context.reply(messages.afterSearch, keyboard); 
 
         return context.wizard.next();
     },
