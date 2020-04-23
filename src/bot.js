@@ -8,8 +8,7 @@ const keyboards = require("./constants/keyboards");
 const messages = require("./constants/messages");
 
 const {
-    eventsForToday,
-    feelingLuckyForToday
+    eventsTodayWizard
 } = require("./controllers/events-today");
 
 const {
@@ -28,7 +27,7 @@ const start = async context => {
     );
 };
 
-const stage = new Stage([ eventsAroundWizard ]);
+const stage = new Stage([ eventsAroundWizard, eventsTodayWizard ]);
 
 bot.use(session());
 bot.use(stage.middleware());
@@ -36,12 +35,8 @@ bot.use(stage.middleware());
 bot.start(context => start(context));
 bot.hears(buttons.back, context => start(context));
 
-bot.hears(buttons.eventsToday, context => eventsForToday(context));
-bot.hears(buttons.eventsTodayRetry, context => eventsForToday(context));
-bot.hears(buttons.feelingLucky, context => feelingLuckyForToday(context));
-
+bot.hears(buttons.eventsToday, context => context.scene.enter("events-today-wizard"));
 bot.hears(buttons.eventsAround, context => context.scene.enter("events-around-wizard"));
-
 
 if (process.env.NODE_ENV === "development") {
     bot.launch();

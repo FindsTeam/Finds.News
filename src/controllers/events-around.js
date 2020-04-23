@@ -54,6 +54,8 @@ const isEventNear = async (event, location, distanceLimit) => {
 const getEventsAroundPoint = async (events, location, distanceLimit) => {
     if (events.length) {
         return await asyncFilter(events, async event => await isEventNear(event, location, distanceLimit));
+    } else {
+        return [];
     }
 };
 
@@ -67,10 +69,12 @@ const eventsAround = async (context, userLocation, type) => {
     
     await context.reply(message, markup);
     await context.reply(messages.afterSearch, keyboards.main);
-    context.scene && await context.scene.leave();
+
+    return context.scene && await context.scene.leave();
 };
 
 const locationStepHandler = new Composer();
+
 locationStepHandler.on("location", context => {
     const userLocation = context.update.message.location;
 
@@ -85,6 +89,7 @@ locationStepHandler.on("location", context => {
 });
 
 const refineRadiusStepHandler = new Composer();
+
 refineRadiusStepHandler.hears(buttons.near, context => eventsAround(context, context.wizard.state.userLocation, buttons.near));
 refineRadiusStepHandler.hears(buttons.walk, context => eventsAround(context, context.wizard.state.userLocation, buttons.walk));
 
