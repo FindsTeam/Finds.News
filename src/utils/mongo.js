@@ -1,4 +1,5 @@
 const Event = require("../models/event");
+const Preferences = require("../models/preference");
 
 const { toMongoDate, now, endOfToday } = require("./time");
 const { isEventSingle, sortByDate } = require("./events");
@@ -38,4 +39,11 @@ module.exports.getEventsInProgressForToday = async () => {
 
     return events.filter(event => isEventSingle(event))
         .sort((firstEvent, secondEvent) => sortByDate(firstEvent, secondEvent));
+};
+
+module.exports.savePreferences = async preferences => {
+    const query = { uid: preferences.uid };
+    const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+    return await Preferences.findOneAndUpdate(query, preferences, options);
 };

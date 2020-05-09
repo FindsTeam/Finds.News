@@ -10,10 +10,12 @@ const messages = require("./constants/messages");
 const {
     eventsTodayWizard
 } = require("./controllers/events-today");
-
 const {
     eventsAroundWizard
 } = require("./controllers/events-around");
+const {
+    subscribeWizard
+} = require("./controllers/subscribe");
 
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new Telegraf(token, { polling: true });
@@ -27,7 +29,7 @@ const start = async context => {
     );
 };
 
-const stage = new Stage([ eventsAroundWizard, eventsTodayWizard ]);
+const stage = new Stage([ eventsAroundWizard, eventsTodayWizard, subscribeWizard ]);
 
 bot.use(session());
 bot.use(stage.middleware());
@@ -37,6 +39,7 @@ bot.hears(buttons.back, context => start(context));
 
 bot.hears(buttons.eventsToday, context => context.scene.enter("events-today-wizard"));
 bot.hears(buttons.eventsAround, context => context.scene.enter("events-around-wizard"));
+bot.hears(buttons.subscribe, context => context.scene.enter("subscribe-wizard"));
 
 if (process.env.NODE_ENV === "development") {
     bot.launch();
