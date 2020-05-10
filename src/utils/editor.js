@@ -54,11 +54,13 @@ ${ events.map(event => shortEventInformation(event)).join(EVENTS_SEPARATOR) }`;
 module.exports.createEventsDigest = (header, events) => {
     const amount = events.length;
 
-    if (amount === 1) {
-        return fullEventInformation(events[0]);
-    } else if (amount < 4) {
-        return fullEventInformationDigest(header, events);
+    if (amount) {
+        if (amount < 4) {
+            return fullEventInformationDigest(header, events);
+        } else {
+            return shortEventInformationDigest(header, events.splice(0, MAX_EVENTS_AMOUNT));
+        }
     } else {
-        return shortEventInformationDigest(header, events.splice(0, MAX_EVENTS_AMOUNT));
+        return "";
     }
 };

@@ -64,7 +64,7 @@ const eventsAround = async (context, userLocation, type) => {
     const actualEvents = await getActualEventsForToday();
     const eventsAroundLocation = await getEventsAroundPoint(actualEvents, userLocation, distanceLimit);
     const message = eventsAroundLocation.length ?
-        createEventsDigest(messages.eventsAround, eventsAroundLocation) :
+        createEventsDigest(messages.eventsAroundHeader, eventsAroundLocation) :
         messages.noEventsAround;
     
     await context.reply(message, markup);

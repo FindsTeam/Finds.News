@@ -20,7 +20,7 @@ const buildReply = async (context, events) => {
     let keyboard;
 
     if (events.length) {
-        message = createEventsDigest(messages.eventsToday, events);
+        message = createEventsDigest(messages.eventsTodayHeader, events);
         keyboard = keyboards.haveEventsForToday;
     } else {
         message = messages.noEventsForToday;

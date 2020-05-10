@@ -12,5 +12,6 @@ module.exports = {
     preferences: "⚙️  Предпочтения",
     confirmSubscription: "👌  Продолжаем",
     digestsEveryDay: "⚡️  Каждый день",
-    digestsBeforeWeekend: "🎉  Перед выходными"
+    digestsEveryWeekday: "🚀  По будним дням",
+    digestsBeforeWeekend: "🎉  Пятница + выходные"
 };

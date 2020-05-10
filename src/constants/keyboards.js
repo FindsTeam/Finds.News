@@ -31,8 +31,8 @@ const subscriptionWarning = Markup.keyboard([
 ]).oneTime().resize().extra();
 
 const digestsPeriodicity = Markup.keyboard([
-    [ buttons.digestsEveryDay, buttons.digestsBeforeWeekend ],
-    [ buttons.back ]
+    [ buttons.digestsEveryWeekday, buttons.digestsBeforeWeekend ],
+    [ buttons.back, buttons.digestsEveryDay ]
 ]).oneTime().resize().extra();
 
 module.exports = {

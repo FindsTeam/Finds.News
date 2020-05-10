@@ -11,8 +11,9 @@ const messages = require("../constants/messages");
 const periodicityTypes = require("../constants/periodicity-types");
 
 const periodicityMapping = new Map([
-    [ buttons.digestsBeforeWeekend, periodicityTypes.beforeWeekend ],
-    [ buttons.digestsEveryDay, periodicityTypes.everyDay ]
+    [ buttons.digestsEveryDay, periodicityTypes.everyDay ],
+    [ buttons.digestsEveryWeekday, periodicityTypes.everyWeekday ],
+    [ buttons.digestsBeforeWeekend, periodicityTypes.beforeWeekend ]
 ]);
 
 const finishSubscribing = async context => {
@@ -44,6 +45,7 @@ subscriptionProceedHandler.hears(buttons.confirmSubscription, async context => {
 const digestsPeriodicityHandler = new Composer();
 
 digestsPeriodicityHandler.hears(buttons.digestsEveryDay, context => finishSubscribing(context));
+digestsPeriodicityHandler.hears(buttons.digestsEveryWeekday, context => finishSubscribing(context));
 digestsPeriodicityHandler.hears(buttons.digestsBeforeWeekend, context => finishSubscribing(context));
 
 module.exports.subscribeWizard = new WizardScene("subscribe-wizard",

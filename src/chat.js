@@ -41,13 +41,15 @@ bot.hears(buttons.eventsToday, context => context.scene.enter("events-today-wiza
 bot.hears(buttons.eventsAround, context => context.scene.enter("events-around-wizard"));
 bot.hears(buttons.subscribe, context => context.scene.enter("subscribe-wizard"));
 
-if (process.env.NODE_ENV === "development") {
-    bot.launch();
-} else {
-    bot.launch({
-        webhook: {
-            domain: process.env.HEROKU_URL + token,
-            port: process.env.PORT
-        }
-    });
-}
+module.exports.handleChat = () => {
+    if (process.env.NODE_ENV === "development") {
+        bot.launch();
+    } else {
+        bot.launch({
+            webhook: {
+                domain: process.env.HEROKU_URL + token,
+                port: process.env.PORT
+            }
+        });
+    }
+};

@@ -45,5 +45,21 @@ module.exports.savePreferences = async preferences => {
     const query = { uid: preferences.uid };
     const options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
-    return await Preferences.findOneAndUpdate(query, preferences, options);
+    return await Preferences.findOneAndUpdate(query, preferences, options, (error, result) => result);
 };
+
+module.exports.getPreferences = () => Preferences.find({}, (error, result) => {
+    return result.map(preference => {
+        const { uid, name } = preference;
+        const { enabled, periodicity } = preference.notifications;
+
+        return {
+            uid,
+            name,
+            notifications: {
+                enabled,
+                periodicity
+            }
+        };
+    });
+});
