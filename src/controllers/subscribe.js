@@ -2,7 +2,7 @@ const Composer = require("telegraf/composer");
 const WizardScene = require("telegraf/scenes/wizard");
 
 const {
-    savePreferences,
+    savePreference,
 } = require("../utils/mongo");
 
 const keyboards = require("../constants/keyboards");
@@ -18,7 +18,7 @@ const periodicityMapping = new Map([
 
 const finishSubscribing = async context => {
     const periodicity = periodicityMapping.get(context.match);
-    const preferences = {
+    const preference = {
         uid: context.update.message.chat.id,
         name: context.update.message.chat.first_name || context.update.message.chat.title,
         notifications: {
@@ -26,12 +26,15 @@ const finishSubscribing = async context => {
             periodicity
         }
     };
-    const isSaved = await savePreferences(preferences);
+    const isSaved = await savePreference(preference);
+
+    if (isSaved) {
+        context.session.preference.notifications.enabled = true;
+    }
     
     await context.reply(isSaved ? messages.finishSubscribingSuccess : messages.finishSubscribingFailure);
-    await context.reply(messages.start, keyboards.main);
-
-    return context.scene && await context.scene.leave();
+    await context.scene.leave();
+    await context.scene.enter("main-scene");
 };
 
 const subscriptionProceedHandler = new Composer();
@@ -48,7 +51,7 @@ digestsPeriodicityHandler.hears(buttons.digestsEveryDay, context => finishSubscr
 digestsPeriodicityHandler.hears(buttons.digestsEveryWeekday, context => finishSubscribing(context));
 digestsPeriodicityHandler.hears(buttons.digestsBeforeWeekend, context => finishSubscribing(context));
 
-module.exports.subscribeWizard = new WizardScene("subscribe-wizard",
+const subscribeWizard = new WizardScene("subscribe-wizard",
     async (context) => {
         context.reply(messages.subscriptionWarning, keyboards.subscriptionWarning);
 
@@ -57,3 +60,5 @@ module.exports.subscribeWizard = new WizardScene("subscribe-wizard",
     subscriptionProceedHandler,
     digestsPeriodicityHandler
 );
+
+module.exports.subscribeWizard = subscribeWizard;

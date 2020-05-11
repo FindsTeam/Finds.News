@@ -2,6 +2,7 @@ const Telegraf = require("telegraf");
 
 const session = require("telegraf/session");
 const Stage = require("telegraf/stage");
+const Scene = require("telegraf/scenes/base");
 
 const buttons = require("./constants/buttons");
 const keyboards = require("./constants/keyboards");
@@ -16,30 +17,56 @@ const {
 const {
     subscribeWizard
 } = require("./controllers/subscribe");
+const {
+    unsubscribeWizard
+} = require("./controllers/unsubscribe");
+
+const { getPreferenceByUid } = require("./utils/mongo");
 
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new Telegraf(token, { polling: true });
 
 const start = async context => {
-    context.scene && await context.scene.leave();
+    const uid = context.update.message.chat.id;
+
+    context.session.preference = await getPreferenceByUid(uid);
+
+    if (context && context.scene) {
+        await context.scene.leave();
+        await context.scene.enter("main-scene");
+    }
+};
+
+const mainScene = new Scene("main-scene");
+
+mainScene.enter(context => {
+    const { preference } = context.session;
+    const isSubscribed = preference && preference.notifications.enabled;
 
     return context.reply(
         messages.start,
-        keyboards.main
+        keyboards.main(isSubscribed)
     );
-};
+});
 
-const stage = new Stage([ eventsAroundWizard, eventsTodayWizard, subscribeWizard ]);
+mainScene.hears(buttons.eventsToday, context => context.scene.enter("events-today-wizard"));
+mainScene.hears(buttons.eventsAround, context => context.scene.enter("events-around-wizard"));
+mainScene.hears(buttons.subscribe, context => context.scene.enter("subscribe-wizard"));
+mainScene.hears(buttons.unsubscribe, context => context.scene.enter("unsubscribe-wizard"));
+
+const stage = new Stage([ mainScene, eventsAroundWizard, eventsTodayWizard, subscribeWizard, unsubscribeWizard ]);
 
 bot.use(session());
 bot.use(stage.middleware());
 
 bot.start(context => start(context));
-bot.hears(buttons.back, context => start(context));
+bot.hears(buttons.home, context => start(context));
 
+// fallback - there could be a situation when app reloaded and the user hangs outside every available scene
 bot.hears(buttons.eventsToday, context => context.scene.enter("events-today-wizard"));
 bot.hears(buttons.eventsAround, context => context.scene.enter("events-around-wizard"));
 bot.hears(buttons.subscribe, context => context.scene.enter("subscribe-wizard"));
+bot.hears(buttons.unsubscribe, context => context.scene.enter("unsubscribe-wizard"));
 
 module.exports.handleChat = () => {
     if (process.env.NODE_ENV === "development") {

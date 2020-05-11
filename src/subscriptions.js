@@ -5,7 +5,7 @@ const markup = Extra.markdown();
 const handler = new Telegraf(process.env.TELEGRAM_TOKEN);
 
 const {
-    getPreferences,
+    getAllPreferences,
     getActualEventsForToday,
 } = require("./utils/mongo");
 const { shouldSendDigestToday } = require("./utils/time");
@@ -14,7 +14,7 @@ const { createEventsDigest } = require("./utils/editor");
 const messages = require("./constants/messages");
 
 module.exports.handleSubscriptions = async () => {   
-    const preferences = await getPreferences();
+    const preferences = await getAllPreferences();
 
     if (preferences.length) {
         const actualEvents = await getActualEventsForToday();

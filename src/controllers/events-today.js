@@ -55,7 +55,7 @@ const afterSearchStepHandler = new Composer();
 afterSearchStepHandler.hears(buttons.eventsTodayRetry, context => retryEventsForToday(context));
 afterSearchStepHandler.hears(buttons.feelingLucky, context => feelingLuckyForToday(context));
 
-module.exports.eventsTodayWizard = new WizardScene("events-today-wizard",
+const eventsTodayWizard = new WizardScene("events-today-wizard",
     async (context) => {
         const keyboard = await eventsForToday(context);
 
@@ -65,3 +65,5 @@ module.exports.eventsTodayWizard = new WizardScene("events-today-wizard",
     },
     afterSearchStepHandler
 );
+
+module.exports.eventsTodayWizard = eventsTodayWizard;
