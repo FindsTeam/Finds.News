@@ -1,1 +1,1 @@
-web: node ./build/bot.js
+web: node ./build/bot.js chat

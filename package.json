@@ -4,7 +4,8 @@
   "description": "A Telegram bot designed to discover upcoming events",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon index.js chat",
+    "subscriptions": "node index.js subscriptions",
     "lint": "eslint --color ./",
     "build": "webpack"
   },

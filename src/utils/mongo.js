@@ -1,9 +1,11 @@
 const Event = require("../models/event");
+const Preferences = require("../models/preference");
 
 const { toMongoDate, now, endOfToday } = require("./time");
 const { isEventSingle, sortByDate } = require("./events");
 
 const findEventByQuery = query => Event.find(query, (error, result) => result);
+const findPreferencesByQuery = query => Preferences.find(query, (error, result) => result); 
 
 const getEventsInRangeByStartTime = async (from, to) => {
     const query = {
@@ -39,3 +41,14 @@ module.exports.getEventsInProgressForToday = async () => {
     return events.filter(event => isEventSingle(event))
         .sort((firstEvent, secondEvent) => sortByDate(firstEvent, secondEvent));
 };
+
+module.exports.savePreference = preferences => {
+    const query = { uid: preferences.uid };
+    const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+    return Preferences.findOneAndUpdate(query, preferences, options, (error, result) => result);
+};
+
+module.exports.getPreferenceByUid = uid => Preferences.findOne({ uid }, (error, result) => result);
+
+module.exports.getAllPreferences = () => findPreferencesByQuery({});

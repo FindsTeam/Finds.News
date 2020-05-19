@@ -1,7 +1,7 @@
 const moment = require("moment");
 const { capitalize } = require("./text");
 
-moment.locale("ru");
+const periodicityTypes = require("../constants/periodicity-types");
 
 const MONGO_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSSZ";
 const FINDS_DAY_FORMAT = "DD.MM.YYYY";
@@ -13,6 +13,14 @@ const SECOND = 1000;
 const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
+
+const periodicityMapping = new Map([
+    [ periodicityTypes.everyDay, [ 1, 2, 3, 4, 5, 6, 0 ] ],
+    [ periodicityTypes.everyWeekday, [ 1, 2, 3, 4, 5 ] ],
+    [ periodicityTypes.beforeWeekend, [ 5, 6, 0 ] ],
+]);
+
+moment.locale("ru");
 
 module.exports.now = () => {
     return moment().valueOf();
@@ -48,4 +56,10 @@ module.exports.toFindsTime = time => {
 
 module.exports.isTimePeriodLessThanOneDay = (from, to) => {
     return moment(to).diff(from, "milliseconds") < DAY; 
+};
+
+module.exports.shouldSendDigestToday = periodicity => {
+    const dayOfWeek = moment().day();
+
+    return periodicityMapping.get(periodicity).includes(dayOfWeek);
 };
