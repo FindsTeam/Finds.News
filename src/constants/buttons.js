@@ -1,7 +1,7 @@
 module.exports = {
-    eventsAround: "🔍  Ивенты вокруг меня",
+    eventsAround: "🔍  События вокруг меня",
     eventsAroundRetry: "🔍  Попробовать еще раз",
-    eventsToday: "📅  Ивенты на сегодня",
+    eventsToday: "📅  События на сегодня",
     eventsTodayRetry: "📅  Попробовать еще раз",
     home: "🏠  Домой",
     feelingLucky: "🍀  Мне сегодня повезет!",
@@ -14,5 +14,13 @@ module.exports = {
     confirmSubscription: "👌  Продолжаем",
     digestsEveryDay: "⚡️  Каждый день",
     digestsEveryWeekday: "🚀  По будним дням",
-    digestsBeforeWeekend: "🎉  Пятница + выходные"
+    digestsBeforeWeekend: "🎉  Пятница + выходные",
+    configureEntry: "🚪  Тип входа",
+    configureType: "🌱  Тип событий",
+    educationEvents: "🥇  Развивающие",
+    entertainmentEvents: "🎈  Развлекательные",
+    allTypesEvents: "🥇🎈  Все подряд",
+    freeEvents: "🧀  Свободный вход",
+    paidEvents: "💰  Платный вход",
+    allEntryTypesEvents: "🧀💰  Без разницы",
 };

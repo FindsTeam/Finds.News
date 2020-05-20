@@ -1,7 +1,7 @@
 const moment = require("moment");
 const { capitalize } = require("./text");
 
-const periodicityTypes = require("../constants/periodicity-types");
+const { periodicityTypes } = require("../constants/preferences");
 
 const MONGO_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSSZ";
 const FINDS_DAY_FORMAT = "DD.MM.YYYY";

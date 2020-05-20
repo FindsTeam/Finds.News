@@ -8,7 +8,7 @@ const {
 const keyboards = require("../constants/keyboards");
 const buttons = require("../constants/buttons");
 const messages = require("../constants/messages");
-const periodicityTypes = require("../constants/periodicity-types");
+const { periodicityTypes } = require("../constants/preferences");
 
 const periodicityMapping = new Map([
     [ buttons.digestsEveryDay, periodicityTypes.everyDay ],
@@ -26,13 +26,13 @@ const finishSubscribing = async context => {
             periodicity
         }
     };
-    const isSaved = await savePreference(preference);
+    const savedPreference = await savePreference(preference);
 
-    if (isSaved) {
-        context.session.preference.notifications.enabled = true;
+    if (savedPreference) {
+        context.session.preference = savedPreference;
     }
     
-    await context.reply(isSaved ? messages.finishSubscribingSuccess : messages.finishSubscribingFailure);
+    await context.reply(savedPreference ? messages.finishSubscribingSuccess : messages.finishSubscribingFailure);
     await context.scene.leave();
     await context.scene.enter("main-scene");
 };
@@ -47,9 +47,9 @@ subscriptionProceedHandler.hears(buttons.confirmSubscription, async context => {
 
 const digestsPeriodicityHandler = new Composer();
 
-digestsPeriodicityHandler.hears(buttons.digestsEveryDay, context => finishSubscribing(context));
-digestsPeriodicityHandler.hears(buttons.digestsEveryWeekday, context => finishSubscribing(context));
-digestsPeriodicityHandler.hears(buttons.digestsBeforeWeekend, context => finishSubscribing(context));
+digestsPeriodicityHandler.hears(buttons.digestsEveryDay, async context => await finishSubscribing(context));
+digestsPeriodicityHandler.hears(buttons.digestsEveryWeekday, async context => await finishSubscribing(context));
+digestsPeriodicityHandler.hears(buttons.digestsBeforeWeekend, async context => await finishSubscribing(context));
 
 const subscribeWizard = new WizardScene("subscribe-wizard",
     async (context) => {
