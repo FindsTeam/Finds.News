@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Notifications = require("./notification");
+const Subscriptions = require("./subscription");
 
 const Preferences = new mongoose.Schema({
     uid: {
@@ -13,6 +14,10 @@ const Preferences = new mongoose.Schema({
     notifications: {
         type: Notifications,
         required: false
+    },
+    subscriptions: {
+        type: Subscriptions,
+        required: false,
     }
 });
 

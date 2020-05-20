@@ -3,10 +3,11 @@ const Extra = require("telegraf/extra");
 const buttons = require("./buttons");
 
 const main = isSubscribed => {
-    const subscribeButton = isSubscribed ? buttons.unsubscribe : buttons.subscribe;
+    const footerButton = isSubscribed ? buttons.preferences : buttons.subscribe;
+
     return Markup.keyboard([
         [ buttons.eventsToday, buttons.eventsAround ],
-        [ subscribeButton, buttons.preferences ]
+        [ footerButton ]
     ]).oneTime().resize().extra();
 };
 
@@ -37,6 +38,21 @@ const digestsPeriodicity = Markup.keyboard([
     [ buttons.home, buttons.digestsEveryDay ]
 ]).oneTime().resize().extra();
 
+const preferencesMenu = Markup.keyboard([
+    [ buttons.configureType, buttons.configureEntry ],
+    [ buttons.home, buttons.unsubscribe ]
+]).oneTime().resize().extra();
+
+const changeTypeMenu = Markup.keyboard([
+    [ buttons.educationEvents, buttons.entertainmentEvents ],
+    [ buttons.home, buttons.allTypesEvents ]
+]).oneTime().resize().extra();
+
+const changeEntryTypeMenu = Markup.keyboard([
+    [ buttons.freeEvents, buttons.paidEvents ],
+    [ buttons.home, buttons.allEntryTypesEvents ]
+]).oneTime().resize().extra();
+
 module.exports = {
     main,
     haveEventsForToday,
@@ -44,5 +60,8 @@ module.exports = {
     askForLocation,
     searchRadius,
     subscriptionWarning,
-    digestsPeriodicity
+    digestsPeriodicity,
+    preferencesMenu,
+    changeTypeMenu,
+    changeEntryTypeMenu
 };

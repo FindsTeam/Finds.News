@@ -13,14 +13,16 @@ const unsubscriptionProceedHandler = new Composer();
 
 unsubscriptionProceedHandler.hears(buttons.confirmSubscription, async context => {
     const preference = context.session.preference;
-    preference.notifications.enabled = false;
-    const isUpdated = await savePreference(preference);
 
-    if (isUpdated) {
-        context.session.preference.notifications.enabled = false;
+    preference.notifications.enabled = false;
+    
+    const savedPreference = await savePreference(preference);
+
+    if (savedPreference) {
+        context.session.preference = savedPreference;
     }
     
-    await context.reply(isUpdated ? messages.finishUnsubscribingSuccess : messages.finishUnsubscribingFailure);
+    await context.reply(savedPreference ? messages.finishUnsubscribingSuccess : messages.finishUnsubscribingFailure);
 
     await context.scene.leave();
     await context.scene.enter("main-scene");
