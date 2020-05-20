@@ -64,13 +64,12 @@ const eventsAround = async (context, userLocation, type) => {
     const actualEvents = await getActualEventsForToday();
     const eventsAroundLocation = await getEventsAroundPoint(actualEvents, userLocation, distanceLimit);
     const message = eventsAroundLocation.length ?
-        createEventsDigest(messages.eventsAround, eventsAroundLocation) :
+        createEventsDigest(messages.eventsAroundHeader, eventsAroundLocation) :
         messages.noEventsAround;
     
     await context.reply(message, markup);
-    await context.reply(messages.afterSearch, keyboards.main);
-
-    return context.scene && await context.scene.leave();
+    await context.scene.leave();
+    await context.scene.enter("main-scene");
 };
 
 const locationStepHandler = new Composer();
@@ -93,7 +92,7 @@ const refineRadiusStepHandler = new Composer();
 refineRadiusStepHandler.hears(buttons.near, context => eventsAround(context, context.wizard.state.userLocation, buttons.near));
 refineRadiusStepHandler.hears(buttons.walk, context => eventsAround(context, context.wizard.state.userLocation, buttons.walk));
 
-module.exports.eventsAroundWizard = new WizardScene("events-around-wizard",
+const eventsAroundWizard = new WizardScene("events-around-wizard",
     (context) => {
         context.reply(messages.askForLocation, keyboards.askForLocation);
 
@@ -102,3 +101,5 @@ module.exports.eventsAroundWizard = new WizardScene("events-around-wizard",
     locationStepHandler,
     refineRadiusStepHandler
 );
+
+module.exports.eventsAroundWizard = eventsAroundWizard;
