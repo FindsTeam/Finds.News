@@ -35,14 +35,19 @@ const asyncFilter = async (arr, callback) => {
     return (await Promise.all(arr.map(async item => (await callback(item)) ? item : fail))).filter(i => i !== fail);
 };
 
+const normalizeAddress = address => {
+    return address.toLowerCase().replace(/помещение/g, "");
+};
+
 const isEventNear = async (event, location, distanceLimit) => {
+    
     if (!event.address) {
         return false;
     }
 
-    const eventGeopoint = await addressToGeopoint(event.address);
+    const eventGeopoint = await addressToGeopoint(normalizeAddress(event.address));
 
-    if (eventGeopoint.relevance < RELEVANCE_LIMIT) {
+    if (!eventGeopoint || eventGeopoint.relevance < RELEVANCE_LIMIT) {
         return false;
     }
 
@@ -66,6 +71,7 @@ const eventsAround = async (context, userLocation, type) => {
     const message = eventsAroundLocation.length ?
         createEventsDigest(messages.eventsAroundHeader, eventsAroundLocation) :
         messages.noEventsAround;
+
     
     await context.reply(message, markup);
     await context.scene.leave();
