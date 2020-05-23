@@ -24,7 +24,7 @@ module.exports.addressToGeopoint = address => {
         searchtext: address
     };
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         here.geocode(geocodeParams, (error, result) => {
             if (
                 !error &&
@@ -34,7 +34,8 @@ module.exports.addressToGeopoint = address => {
                 result.Response.View[0].Result.length
             ) {
                 const data = result.Response.View[0].Result[0];
-    
+                
+
                 resolve({
                     relevance: data.Relevance,
                     location: {
@@ -43,7 +44,7 @@ module.exports.addressToGeopoint = address => {
                     }
                 }); 
             } else {
-                reject(error);
+                resolve(null);
             }
         });
     });
