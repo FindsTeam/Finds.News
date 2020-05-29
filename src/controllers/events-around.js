@@ -39,8 +39,7 @@ const normalizeAddress = address => {
     return address.toLowerCase().replace(/помещение/g, "");
 };
 
-const isEventNear = async (event, location, distanceLimit) => {
-    
+const isEventNear = async (event, location, distanceLimit) => {   
     if (!event.address) {
         return false;
     }
