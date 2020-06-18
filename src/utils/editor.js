@@ -1,7 +1,7 @@
 const { toFindsBriefDate, now, toFindsTime } = require("./time");
 
 const MAX_EVENTS_AMOUNT = 12;
-const SHORT_DESCRIPTION = 170;
+const SHORT_DESCRIPTION = 150;
 const LONG_DESCRIPTION = 400;
 const SEPARATOR = "`______________________________`\n";
 const EVENTS_SEPARATOR = `\n${ SEPARATOR }\n`;
